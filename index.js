@@ -1,14 +1,24 @@
+const express = require('express');
+const path = require('path');
 
-const http = require('http');
+const app = express();
+const PORT = process.env.PORT || 3000;
 
-const server = http.createServer((req, res) => {
-    res.writeHead(200, {
-        'Content-Type': 'text/plain'
+// Serve static frontend files
+app.use(express.static(path.join(__dirname, 'public')));
+
+// API endpoint
+app.get('/api/hello', (req, res) => {
+    res.json({
+        message: 'Hello from Node.js backend!'
     });
-
-    res.end('Hello from Node.js Server!');
 });
 
-server.listen(3000, () => {
-    console.log('Server running at http://localhost:3000');
+// SPA fallback
+app.get('/{*path}', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+app.listen(PORT, () => {
+    console.log(`SPA running at http://localhost:${PORT}`);
 });
